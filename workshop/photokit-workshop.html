@@ -1,0 +1,2179 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhotoKit Workshop · Git, GitHub & Proje Yönetimi</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --panel: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --accent: #2563eb;
+    --accent-dark: #1e40af;
+    --border: #e2e8f0;
+    --code-bg: #1e1e2e;
+    --code-fg: #cdd6f4;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-bg: #fef9c3;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --purple: #7c3aed;
+    --purple-bg: #ede9fe;
+    --blue-bg: #dbeafe;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 16px;
+  }
+  header.top {
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #7c3aed 100%);
+    color: white;
+    padding: 40px 24px;
+    text-align: center;
+  }
+  header.top h1 { margin: 0; font-size: 2.1rem; letter-spacing: -0.02em; }
+  header.top p { margin: 8px 0 0; opacity: 0.95; font-size: 1.05rem; }
+  .layout { display: flex; max-width: 1400px; margin: 0 auto; }
+  nav.toc {
+    width: 280px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 24px 16px;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  nav.toc h3 {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  nav.toc a {
+    display: block;
+    padding: 6px 10px;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 6px;
+    margin-bottom: 2px;
+    transition: background 0.15s;
+  }
+  nav.toc a:hover { background: var(--blue-bg); color: var(--accent-dark); }
+  main {
+    flex: 1;
+    padding: 40px 48px;
+    max-width: 900px;
+  }
+  section { margin-bottom: 64px; scroll-margin-top: 20px; }
+  h2 {
+    font-size: 1.7rem;
+    color: var(--accent-dark);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+    margin-top: 0;
+  }
+  h3 { font-size: 1.25rem; color: var(--accent-dark); margin-top: 28px; }
+  h4 { font-size: 1.05rem; color: var(--text); margin-top: 18px; }
+  p { margin: 10px 0; }
+  .duration {
+    display: inline-block;
+    background: var(--blue-bg);
+    color: var(--accent-dark);
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  pre.code {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 16px 18px;
+    border-radius: 8px;
+    overflow-x: auto;
+    position: relative;
+    margin: 14px 0;
+    font-size: 0.88rem;
+    line-height: 1.55;
+    font-family: "SF Mono", "JetBrains Mono", Consolas, Menlo, monospace;
+  }
+  pre.code .lang {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    color: var(--muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  pre.code button.copy {
+    position: absolute;
+    top: 8px;
+    right: 70px;
+    background: rgba(255,255,255,0.1);
+    color: var(--code-fg);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  pre.code button.copy:hover { background: rgba(255,255,255,0.2); }
+  pre.code button.copy.copied { background: var(--green); color: white; border-color: var(--green); }
+  code.inline {
+    background: #f1f5f9;
+    color: #be185d;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    font-family: "SF Mono", Consolas, monospace;
+  }
+  .callout {
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 8px;
+    border-left: 4px solid;
+  }
+  .callout h4 { margin: 0 0 6px; font-size: 1rem; }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout.task { background: var(--green-bg); border-color: var(--green); }
+  .callout.task h4 { color: #14532d; }
+  .callout.info { background: var(--blue-bg); border-color: var(--accent); }
+  .callout.info h4 { color: var(--accent-dark); }
+  .callout.warn { background: var(--yellow-bg); border-color: var(--yellow); }
+  .callout.warn h4 { color: #713f12; }
+  .callout.conflict { background: var(--red-bg); border-color: var(--red); }
+  .callout.conflict h4 { color: #7f1d1d; }
+  .callout.tip { background: var(--purple-bg); border-color: var(--purple); }
+  .callout.tip h4 { color: #581c87; }
+  .diagram {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 16px 0;
+    text-align: center;
+  }
+  .diagram pre {
+    background: transparent;
+    color: var(--text);
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.85rem;
+    text-align: left;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 0;
+  }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 0.92rem; }
+  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: #f1f5f9; color: var(--accent-dark); font-weight: 600; }
+  .role-card {
+    display: inline-block;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 6px 8px 6px 0;
+    min-width: 200px;
+  }
+  .role-card strong { color: var(--accent-dark); }
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li {
+    padding: 6px 0 6px 28px;
+    position: relative;
+  }
+  .checklist li::before {
+    content: "☐";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 1.1rem;
+  }
+  kbd {
+    background: #e2e8f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-family: monospace;
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 1px 0 #cbd5e1;
+  }
+  .actor {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin: 2px 4px 2px 0;
+    font-family: "SF Mono", Consolas, monospace;
+    white-space: nowrap;
+  }
+  .actor.maintainer { background: #ede9fe; color: #5b21b6; border: 1px solid #7c3aed; }
+  .actor.c1 { background: #dcfce7; color: #14532d; border: 1px solid #16a34a; }
+  .actor.c2 { background: #dbeafe; color: #1e3a8a; border: 1px solid #2563eb; }
+  .actor.c3 { background: #fef9c3; color: #713f12; border: 1px solid #ca8a04; }
+  .actor.c4 { background: #ffedd5; color: #7c2d12; border: 1px solid #ea580c; }
+  .actor.all { background: #f1f5f9; color: #334155; border: 1px solid #64748b; }
+  .step-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 18px 0;
+    border-left: 5px solid var(--accent);
+  }
+  .step-box h4 {
+    margin: 0 0 10px;
+    color: var(--accent-dark);
+    font-size: 1.08rem;
+  }
+  .step-box .actors { margin-bottom: 12px; }
+  .step-box pre.code { margin: 10px 0; }
+  .file-path {
+    background: #fef3c7;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 0.88em;
+    color: #713f12;
+    border: 1px solid #fde68a;
+  }
+  .footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+  }
+  @media (max-width: 900px) {
+    .layout { flex-direction: column; }
+    nav.toc { width: 100%; position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+    main { padding: 24px; }
+  }
+  @media print {
+    nav.toc, pre.code button.copy { display: none; }
+    main { max-width: 100%; }
+    .layout { display: block; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>PhotoKit Workshop</h1>
+  <p>Git, GitHub & Proje Yönetimi · 3.5 Saatlik Uygulamalı Workshop</p>
+</header>
+
+<div class="layout">
+
+<nav class="toc">
+  <h3>İçerik</h3>
+  <a href="#intro">Hoşgeldiniz</a>
+  <a href="#bolum-01">01 · Ortam Kurulumu (UV)</a>
+  <a href="#bolum-02">02 · Solo Git Temelleri</a>
+  <a href="#bolum-03">03 · Branch Nasıl Çalışır</a>
+  <a href="#bolum-04">04 · PhotoKit Projesi</a>
+  <a href="#bolum-05">05 · Takım ve GitHub Repo</a>
+  <a href="#bolum-06">06 · Takım Simülasyonu, Commit & PR</a>
+  <a href="#bolum-07">07 · Code Review</a>
+  <a href="#bolum-08">08 · Conflict Senaryosu</a>
+  <a href="#bolum-09">09 · Git Worktree</a>
+  <a href="#bolum-10">10 · GitHub Projects</a>
+  <a href="#bolum-11">11 · Git Flow'ları</a>
+  <a href="#bolum-12">12 · CI & Bağımlılık Yönetimi</a>
+  <a href="#bolum-13">13 · Kurtarma Toolkit'i</a>
+  <a href="#bolum-14">14 · Kapanış & Kaynaklar</a>
+</nav>
+
+<main>
+
+<section id="intro">
+  <h2>Hoşgeldiniz <span class="duration">~5 dk</span></h2>
+  <p>Bu workshop sonunda şunları yapabileceksiniz:</p>
+  <ul>
+    <li>Git komut satırını rahatlıkla kullanmak</li>
+    <li>GitHub üzerinde takım halinde Pull Request akışını işletmek</li>
+    <li>Kod review yapmak ve merge conflict'leri çözmek</li>
+    <li>Git worktree ile paralel branch'lerde aynı anda çalışmak</li>
+    <li>Modern Python ortamını <code class="inline">uv</code> ile yönetmek</li>
+    <li>GitHub Projects ile backlog yönetmek ve GitHub Actions ile CI kurmak</li>
+  </ul>
+
+  <h3>Ne İnşa Edeceğiz?</h3>
+  <p><strong>PhotoKit</strong> — komut satırından resimlere filtre uygulayan bir Python aracı. Örnek kullanım:</p>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>photokit grayscale kedi.jpg cikti.jpg
+photokit blur kedi.jpg cikti.jpg --radius 5
+photokit resize kedi.jpg cikti.jpg --width 800
+photokit watermark kedi.jpg cikti.jpg --text "Hazirlayan"</pre>
+
+  <h3>Akış</h3>
+  <table>
+    <thead><tr><th>Süre</th><th>Bölüm</th></tr></thead>
+    <tbody>
+      <tr><td>0:00 – 0:15</td><td>Hoşgeldin + UV ile ortam</td></tr>
+      <tr><td>0:15 – 0:50</td><td>Solo Git temelleri</td></tr>
+      <tr><td>0:50 – 1:05</td><td>Branch teori + PhotoKit tanıtımı</td></tr>
+      <tr><td>1:05 – 1:15</td><td><em>Mola</em></td></tr>
+      <tr><td>1:15 – 2:15</td><td>Takım repo + ilk PR + review + conflict</td></tr>
+      <tr><td>2:15 – 2:35</td><td>Worktree</td></tr>
+      <tr><td>2:35 – 3:05</td><td>GitHub Projects + git flow'lar + CI</td></tr>
+      <tr><td>3:05 – 3:30</td><td>Kurtarma + kapanış + Q&A</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout info">
+    <h4>Ön-koşul</h4>
+    <p>Workshop öncesi kurulum rehberini tamamlamış olmalısın: <code class="inline">git --version</code>, <code class="inline">gh --version</code>, <code class="inline">uv --version</code> komutları çalışmalı ve GitHub hesabın <code class="inline">gh auth status</code> ile "Logged in" göstermeli.</p>
+  </div>
+</section>
+
+<section id="bolum-01">
+  <h2>01 · Ortam Kurulumu — UV <span class="duration">~10 dk</span></h2>
+
+  <p><strong>UV nedir?</strong> Astral ekibinin yazdığı, <code class="inline">pip</code> + <code class="inline">venv</code> + <code class="inline">poetry</code> yerine geçen ultra-hızlı Python paket yöneticisi. Rust ile yazıldığı için <code class="inline">pip</code>'ten 10-100x daha hızlı. Tek komutla proje başlatır, bağımlılık ekler, lock dosyası oluşturur.</p>
+
+  <h3>UV Kurulumu</h3>
+
+  <p><strong>macOS / Linux:</strong></p>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>curl -LsSf https://astral.sh/uv/install.sh | sh</pre>
+
+  <p><strong>Windows (PowerShell):</strong></p>
+  <pre class="code"><span class="lang">powershell</span><button class="copy">Kopyala</button>powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</pre>
+
+  <p>Doğrula:</p>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>uv --version</pre>
+
+  <h3>Temel UV Komutları</h3>
+  <table>
+    <thead><tr><th>Komut</th><th>Açıklama</th></tr></thead>
+    <tbody>
+      <tr><td><code class="inline">uv init projem</code></td><td>Yeni bir Python projesi oluşturur (pyproject.toml + .venv)</td></tr>
+      <tr><td><code class="inline">uv add pillow click</code></td><td>Dependency ekler ve yükler</td></tr>
+      <tr><td><code class="inline">uv add --dev pytest ruff</code></td><td>Sadece development bağımlılığı ekler</td></tr>
+      <tr><td><code class="inline">uv remove click</code></td><td>Dependency siler</td></tr>
+      <tr><td><code class="inline">uv sync</code></td><td>Lock dosyasından tüm dependency'leri yükler</td></tr>
+      <tr><td><code class="inline">uv run python script.py</code></td><td>Projenin sanal ortamında script çalıştırır</td></tr>
+      <tr><td><code class="inline">uv lock</code></td><td>uv.lock dosyasını günceller</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <h4>Neden UV?</h4>
+    <p>PhotoKit'te 5 farklı bağımlılığımız olacak (pillow, click, rich, pytest, ruff). UV hepsini lock'layarak versiyonları kilitler — herkeste aynı sürümler kurulur. Gerçek proje hayatında <em>"bende çalışıyor"</em> problemini bitirir.</p>
+  </div>
+</section>
+
+<section id="bolum-02">
+  <h2>02 · Solo Git Temelleri <span class="duration">~35 dk</span></h2>
+  <p>Bu bölümde takımlar <strong>yok</strong>. Herkes kendi laptop'ında aynı egzersizleri yapar. Amaç: komutlara kas hafızası kazanmak.</p>
+
+  <h3>Git'in Zihinsel Modeli</h3>
+  <div class="diagram">
+<pre>
+ Working Directory  ─(git add)─►  Staging Area  ─(git commit)─►  Local Repo  ─(git push)─►  Remote (GitHub)
+    [düzenlenen]                   [hazırlanan]                    [commit'li]                  [paylaşılan]
+</pre>
+  </div>
+  <p>Her dosya 4 durumdan birinde: <strong>untracked</strong> (git bilmez), <strong>modified</strong> (değişti), <strong>staged</strong> (add'lendi), <strong>committed</strong> (commit'lendi).</p>
+
+  <h3>Egzersiz 1 — Boş Repo ve İlk Commit'ler</h3>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>mkdir git-playground && cd git-playground
+git init
+echo "# My playground" > README.md
+git status
+git add README.md
+git status
+git commit -m "initial commit"
+git log</pre>
+
+  <div class="callout info">
+    <h4>Dil Kuralı</h4>
+    <p>Workshop boyunca <strong>kod ve commit mesajlarını İngilizce</strong> yazıyoruz. Anlatım ve tartışma Türkçe. Bu gerçek hayatta da standart — açık kaynak dünyası İngilizce, CI araçları İngilizce commit mesajları bekler.</p>
+  </div>
+
+  <div class="callout task">
+    <h4>Yap</h4>
+    <p><code class="inline">notes.txt</code> dosyası oluştur, içine 2 satır yaz, commit et. Sonra o satırları düzenle, tekrar commit et. <code class="inline">git log --oneline</code> ile 3 commit görmelisin.</p>
+  </div>
+
+  <h3>Egzersiz 2 — Fark Görmek</h3>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># Çalışan dosyadaki değişiklik:
+git diff
+
+# Staging'e eklenen değişiklik:
+git diff --staged
+
+# İki commit arasında fark:
+git diff HEAD~2 HEAD</pre>
+
+  <h3>Egzersiz 3 — Branch ve Merge (Lokal)</h3>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># Yeni branch oluştur ve geç
+git switch -c try-feature
+
+# Bir şeyler değiştir, commit et
+echo "experimental line" >> notes.txt
+git add notes.txt
+git commit -m "add experimental feature"
+
+# main'e dön
+git switch main
+
+# try-feature'i main'e merge et
+git merge try-feature
+
+# Kullanmadığın branch'i sil
+git branch -d try-feature</pre>
+
+  <div class="callout task">
+    <h4>Yap</h4>
+    <p>İki farklı branch aç: <code class="inline">feat-a</code> ve <code class="inline">feat-b</code>. Her birinde farklı bir dosya oluştur ve commit et. Sonra ikisini de <code class="inline">main</code>'e sırayla merge et. <code class="inline">git log --oneline --graph --all</code> çıktısında ağacı gör.</p>
+  </div>
+
+  <h3>Egzersiz 4 — Lokal Conflict ve Çözümü</h3>
+  <p>Workshop'ın en kritik kaslarından. Önce lokalde simüle ediyoruz.</p>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># main'de notes.txt'nin içeriğini "apple" yap
+echo "apple" > notes.txt
+git add notes.txt && git commit -m "set note to apple"
+
+# Yeni bir branch'te aynı satırı "pear" yap
+git switch -c different-fruit
+echo "pear" > notes.txt
+git add notes.txt && git commit -m "set note to pear"
+
+# main'e geç ve merge et — çakışacak!
+git switch main
+git merge different-fruit</pre>
+
+  <p>Git şuna benzer bir mesaj verecek:</p>
+  <pre class="code"><span class="lang">text</span><button class="copy">Kopyala</button>Auto-merging notes.txt
+CONFLICT (content): Merge conflict in notes.txt
+Automatic merge failed; fix conflicts and then commit the result.</pre>
+
+  <p><code class="inline">notes.txt</code>'yi açtığında şunu göreceksin:</p>
+  <pre class="code"><span class="lang">text</span><button class="copy">Kopyala</button>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+apple
+=======
+pear
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; different-fruit</pre>
+
+  <p><strong>Çözüm:</strong> Hangi versiyonu istediğine karar ver (veya ikisini birleştir), conflict marker'larını sil, sonra:</p>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>git add notes.txt
+git commit -m "resolve merge conflict: keep both fruits"</pre>
+
+  <div class="callout tip">
+    <h4>İpucu</h4>
+    <p>VS Code, conflict'li dosyayı açtığında <em>"Accept Current Change / Accept Incoming Change / Accept Both / Compare Changes"</em> butonlarını gösterir. Görsel çözüm için çok pratik.</p>
+  </div>
+</section>
+
+<section id="bolum-03">
+  <h2>03 · Branch Nasıl Çalışır <span class="duration">~10 dk</span></h2>
+
+  <p>Branch = bir commit'e pointer. Yeni commit yaptıkça pointer ileri kayar.</p>
+
+  <h3>Şekil 1 — Basit Branch</h3>
+  <div class="diagram">
+    <pre class="mermaid">
+gitGraph
+   commit id: "A"
+   commit id: "B"
+   branch feat/blur
+   checkout feat/blur
+   commit id: "C"
+   commit id: "D"
+   checkout main
+   commit id: "E"
+   merge feat/blur
+   commit id: "F"
+    </pre>
+  </div>
+  <p><code class="inline">feat/blur</code> branch'i, <code class="inline">main</code>'den B commit'inde ayrıldı. Orada paralel 2 commit yapıldı (C, D). Bu sırada main'de E commit'i oldu. Sonunda merge ile birleşti.</p>
+
+  <h3>Şekil 2 — Fast-Forward vs Three-Way Merge</h3>
+  <p><strong>Fast-forward:</strong> main, branch'ten beri ilerlememişse Git sadece pointer'ı ileri alır. Merge commit oluşmaz.</p>
+  <p><strong>Three-way merge:</strong> main de ilerlediyse Git üç commit'i (ortak ata + iki uç) birleştirip yeni bir merge commit yaratır.</p>
+
+  <h3>Şekil 3 — Merge vs Rebase</h3>
+  <div class="diagram">
+    <pre class="mermaid">
+gitGraph
+   commit id: "A"
+   commit id: "B"
+   branch feat/x
+   commit id: "X1"
+   commit id: "X2"
+   checkout main
+   commit id: "C"
+   merge feat/x tag: "MERGE"
+    </pre>
+  </div>
+  <p><em>Merge</em> her iki tarafı tutar, geçmişi gerçekçi gösterir. <em>Rebase</em> feat/x'teki commit'leri main'in ucuna kopyalar — doğrusal geçmiş elde edersin ama SHA'lar değişir.</p>
+
+  <div class="callout warn">
+    <h4>Altın Kural</h4>
+    <p>Başkasıyla paylaşılmış branch'e <strong>asla</strong> rebase yapma. Rebase sadece senin kendi lokal branch'lerin için güvenlidir.</p>
+  </div>
+
+  <h3>Temel Branch Komutları</h3>
+  <table>
+    <thead><tr><th>Komut</th><th>Ne Yapar?</th></tr></thead>
+    <tbody>
+      <tr><td><code class="inline">git branch</code></td><td>Lokal branch'leri listele</td></tr>
+      <tr><td><code class="inline">git branch -a</code></td><td>Remote branch'ler dahil tümünü listele</td></tr>
+      <tr><td><code class="inline">git switch -c feat/x</code></td><td>Yeni branch oluştur ve geç</td></tr>
+      <tr><td><code class="inline">git switch main</code></td><td>main'e geç</td></tr>
+      <tr><td><code class="inline">git branch -d feat/x</code></td><td>Merge edilmiş branch'i sil</td></tr>
+      <tr><td><code class="inline">git branch -D feat/x</code></td><td>Zorla sil (dikkat)</td></tr>
+      <tr><td><code class="inline">git merge feat/x</code></td><td>feat/x'i mevcut branch'e merge et</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="bolum-04">
+  <h2>04 · PhotoKit Projesini Tanıyalım <span class="duration">~10 dk</span></h2>
+
+  <h3>Proje Yapısı</h3>
+  <div class="diagram">
+<pre>
+photokit/
+├── pyproject.toml          ← UV projesi ve dependency'ler
+├── uv.lock                 ← Kilitli sürümler
+├── README.md
+├── .gitignore
+├── .python-version
+├── src/
+│   └── photokit/
+│       ├── __init__.py
+│       ├── cli.py          ← click ile CLI
+│       ├── registry.py     ← Filtre kaydı (CONFLICT NOKTASI!)
+│       ├── filters/
+│       │   ├── __init__.py
+│       │   ├── base.py     ← Filter base class
+│       │   └── grayscale.py← Referans implementasyon
+│       └── utils/
+│           └── io.py
+├── tests/
+│   ├── __init__.py
+│   └── test_grayscale.py
+├── sample_images/
+│   └── test.jpg
+└── .github/
+    ├── workflows/
+    │   └── ci.yml          ← pytest + ruff
+    └── pull_request_template.md
+</pre>
+  </div>
+
+  <h3>pyproject.toml (Dependency'ler)</h3>
+  <pre class="code"><span class="lang">toml</span><button class="copy">Kopyala</button>[project]
+name = "photokit"
+version = "0.1.0"
+description = "Komut satirindan resim filtreleme araci"
+requires-python = ">=3.10"
+dependencies = [
+    "pillow>=10.0.0",
+    "click>=8.1.0",
+    "rich>=13.0.0",
+]
+
+[project.scripts]
+photokit = "photokit.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.6.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"</pre>
+
+  <h3>src/photokit/filters/base.py</h3>
+  <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from abc import ABC, abstractmethod
+from PIL import Image
+
+
+class Filter(ABC):
+    """Her filtrenin tureyecegi base class."""
+    name: str
+
+    @abstractmethod
+    def apply(self, img: Image.Image, **kwargs) -> Image.Image:
+        """Resmi alir, filtre uygular, yeni resim doner."""
+        ...</pre>
+
+  <h3>src/photokit/filters/grayscale.py (Referans)</h3>
+  <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from PIL import Image
+from .base import Filter
+
+
+class GrayscaleFilter(Filter):
+    name = "grayscale"
+
+    def apply(self, img: Image.Image, **kwargs) -> Image.Image:
+        return img.convert("L")</pre>
+
+  <h3>src/photokit/registry.py (Dikkat: Conflict Noktası)</h3>
+  <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from .filters.base import Filter
+from .filters.grayscale import GrayscaleFilter
+
+# Her yeni filtre burada kaydedilmeli.
+# Iki kisi ayni anda filtre ekledigi zaman CONFLICT cikar!
+FILTERS: dict[str, type[Filter]] = {
+    "grayscale": GrayscaleFilter,
+}
+
+
+def get_filter(name: str) -> Filter:
+    if name not in FILTERS:
+        available = ", ".join(FILTERS.keys())
+        raise ValueError(f"Unknown filter: {name!r}. Available: {available}")
+    return FILTERS[name]()</pre>
+
+  <h3>src/photokit/cli.py</h3>
+  <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>import click
+from PIL import Image
+from rich.console import Console
+from .registry import get_filter, FILTERS
+
+console = Console()
+
+
+@click.group()
+@click.version_option()
+def main() -> None:
+    """PhotoKit — apply filters to images from the command line."""
+    pass
+
+
+@main.command("list")
+def list_filters() -> None:
+    """List all available filters."""
+    console.print("[bold cyan]Available filters:[/]")
+    for name in FILTERS:
+        console.print(f"  - {name}")
+
+
+@main.command()
+@click.argument("name")
+@click.argument("input_path", type=click.Path(exists=True, dir_okay=False))
+@click.argument("output_path", type=click.Path(dir_okay=False))
+@click.option("--radius", type=int, default=2, help="Blur radius (for blur filter)")
+@click.option("--width", type=int, default=800, help="Target width (for resize filter)")
+def apply(name: str, input_path: str, output_path: str, radius: int, width: int) -> None:
+    """Apply a filter to an image."""
+    try:
+        img = Image.open(input_path)
+        flt = get_filter(name)
+        out = flt.apply(img, radius=radius, width=width)
+        out.save(output_path)
+        console.print(f"[green]\u2713[/] {name} applied \u2192 {output_path}")
+    except ValueError as e:
+        console.print(f"[red]Error:[/] {e}")
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    main()</pre>
+
+  <div class="callout info">
+    <h4>Bu Kodlar Nereden?</h4>
+    <p>Starter template GitHub'da hazır. Her takımın maintainer'ı onu <em>template olarak kullanıp</em> kendi takım repo'sunu açacak.</p>
+  </div>
+</section>
+
+<section id="bolum-05">
+  <h2>05 · Takım Oluşturma ve GitHub Repo <span class="duration">~15 dk</span></h2>
+
+  <h3>Takım Kurma</h3>
+  <p>3+ kişilik takımlara ayrılın. Her takımda <strong>bir maintainer</strong>, kalanlar <strong>contributor</strong>.</p>
+
+  <div class="role-card">
+    <strong>Maintainer</strong><br>
+    <small>Repo sahibi. PR'ları review eder, merge eder. GitHub Projects'i yönetir.</small>
+  </div>
+  <div class="role-card">
+    <strong>Contributor</strong><br>
+    <small>Issue seçer, branch açar, feature yazar, PR açar. Başka PR'ları review eder.</small>
+  </div>
+
+  <div class="callout tip">
+    <h4>Esneklik</h4>
+    <p>5+ kişilik takımlarda "rotating reviewer" rolü eklenebilir — her PR için sırayla review yapar. Minimum 3 kişi yeterli.</p>
+  </div>
+
+  <h3>Maintainer Adımları (sadece 1 kişi)</h3>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># 1. IEEE-Ege'deki starter template'ten kendi takim reponuzu olusturun
+# GitHub UI: "Use this template" butonu, ya da:
+gh repo create photokit-<span style="color:#f38ba8">TAKIM-ADI</span> \
+  --template IEEE-Ege/git-github-workshop \
+  --public \
+  --clone
+
+cd photokit-<span style="color:#f38ba8">TAKIM-ADI</span>
+
+# 2. Takım arkadaşlarını collaborator olarak ekle
+gh repo edit --add-topic workshop
+gh api -X PUT repos/:owner/:repo/collaborators/<span style="color:#f38ba8">kullanici-adi</span> \
+  -f permission=push</pre>
+
+  <p>Veya GitHub UI'dan: <strong>Settings → Collaborators → Add people</strong>.</p>
+
+  <h3>Contributor Adımları (herkes)</h3>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># Repo'yu klonla
+gh repo clone <span style="color:#f38ba8">maintainer-adi</span>/photokit-<span style="color:#f38ba8">TAKIM-ADI</span>
+cd photokit-<span style="color:#f38ba8">TAKIM-ADI</span>
+
+# Bagimliliklari kur (UV)
+uv sync
+
+# Calistigini test et
+uv run photokit list
+uv run photokit apply grayscale sample_images/test.jpg out.jpg</pre>
+
+  <div class="callout task">
+    <h4>Yap (Takımca)</h4>
+    <p>Herkesin lokalde <code class="inline">out.jpg</code> dosyası oluşmalı. Açıp gri-ton resmi gör. Olmadıysa hemen yardım iste.</p>
+  </div>
+
+  <h3>Ana Branch'i Koruma (Branch Protection)</h3>
+  <p>Maintainer, <code class="inline">main</code> branch'ini korumaya alır. Bu, kimsenin doğrudan push'layıp kuralları atlayamamasını sağlar.</p>
+  <p>GitHub UI: <strong>Settings → Branches → Add branch ruleset</strong></p>
+  <ul>
+    <li>Branch name pattern: <code class="inline">main</code></li>
+    <li>✓ Require a pull request before merging</li>
+    <li>✓ Require approvals (1 reviewer)</li>
+    <li>✓ Require status checks to pass (CI hazır olunca)</li>
+    <li>✓ Block force pushes</li>
+  </ul>
+</section>
+
+<section id="bolum-06">
+  <h2>06 · Takım Simülasyonu, Commit & PR <span class="duration">~45 dk</span></h2>
+
+  <h3>Rol Kartları — Kim Ne Yapar?</h3>
+  <p>Her takımda şu roller atanır. <strong>Her rol ayrı bir kişi</strong> olmalı — aynı kişi birden fazla rol almaz.</p>
+
+  <p>
+    <span class="actor maintainer">🟣 Maintainer</span> Repo sahibi, PR'ları merge eder, Project board'u yönetir.<br>
+    <span class="actor c1">🟢 Contributor 1</span> <strong>Blur</strong> filtresini yazar.<br>
+    <span class="actor c2">🔵 Contributor 2</span> <strong>Sepia</strong> filtresini yazar.<br>
+    <span class="actor c3">🟡 Contributor 3</span> (varsa) <strong>Invert</strong> filtresini yazar.<br>
+    <span class="actor c4">🟠 Contributor 4</span> (varsa) <strong>Resize</strong> filtresini yazar.
+  </p>
+
+  <div class="callout conflict">
+    <h4>Kritik Atama Kuralı</h4>
+    <p><span class="actor c1">Contributor 1</span> (blur) ve <span class="actor c2">Contributor 2</span> (sepia) <strong>mutlaka farklı kişiler</strong> olmalı. Çünkü bu ikisi <code class="inline">registry.py</code> dosyasına aynı anda yazacak ve <strong>merge conflict</strong> çıkaracak. Conflict yaşamadan workshop tamamlanmış sayılmaz.</p>
+  </div>
+
+  <h3>Simülasyon Scripti — Adım Adım</h3>
+  <p>Aşağıdaki script'i sırayla uygulayın. Her adımın üstünde <strong>hangi rolün</strong> ne yapacağı belirtildi. Diğerleri bu adımda bekler (ya da paralel olarak kendi adımını yapar).</p>
+
+  <div class="step-box">
+    <h4>Adım 1 · Repo'yu Oluştur</h4>
+    <div class="actors"><span class="actor maintainer">🟣 Sadece Maintainer</span></div>
+    <p>Maintainer takım repo'sunu oluşturur. <code class="inline">TAKIM-ADI</code>'ni kendi takım ismiyle değiştir.</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>gh repo create photokit-TAKIM-ADI \
+  --template IEEE-Ege/git-github-workshop \
+  --public --clone
+
+cd photokit-TAKIM-ADI</pre>
+  </div>
+
+  <div class="step-box">
+    <h4>Adım 2 · Takım Arkadaşlarını Davet Et</h4>
+    <div class="actors"><span class="actor maintainer">🟣 Sadece Maintainer</span></div>
+    <p>Her contributor'ın GitHub kullanıcı adı için bir kere çalıştır:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>gh api -X PUT repos/:owner/:repo/collaborators/CONTRIBUTOR1-USERNAME -f permission=push
+gh api -X PUT repos/:owner/:repo/collaborators/CONTRIBUTOR2-USERNAME -f permission=push
+# Takımda 3. kişi varsa:
+gh api -X PUT repos/:owner/:repo/collaborators/CONTRIBUTOR3-USERNAME -f permission=push</pre>
+    <p>Davet edilen herkes e-postada veya GitHub notification'dan daveti <strong>kabul etmeli</strong> — aksi halde push yetkisi yok.</p>
+  </div>
+
+  <div class="step-box">
+    <h4>Adım 3 · Issue Backlog'u Oluştur</h4>
+    <div class="actors"><span class="actor maintainer">🟣 Sadece Maintainer</span></div>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>gh issue create --title "Add blur filter" --body "Gaussian blur with --radius option"
+gh issue create --title "Add sepia filter" --body "Classic sepia tone conversion"
+gh issue create --title "Add invert filter" --body "Invert RGB colors"
+gh issue create --title "Add resize filter" --body "Resize image with --width"
+
+gh issue list  # dogrulama</pre>
+  </div>
+
+  <div class="step-box">
+    <h4>Adım 4 · Repo'yu Clone'la, Ortamı Kur</h4>
+    <div class="actors"><span class="actor all">⚪ Tüm Contributors (paralel)</span></div>
+    <p>Davet kabul edildikten sonra herkes kendi makinesinde:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>gh repo clone MAINTAINER-USERNAME/photokit-TAKIM-ADI
+cd photokit-TAKIM-ADI
+uv sync
+
+# Çalıştığını doğrula
+uv run photokit list
+# Ciktida sadece "grayscale" gorunmeli
+
+# Referans filtreyi dene
+uv run photokit apply grayscale sample_images/test.jpg test_gri.jpg
+# test_gri.jpg olustu mu?</pre>
+    <div class="callout info">
+      <p>Herkes bu noktada aynı durumda olmalı: <code class="inline">main</code> branch'inde, clean working tree, grayscale filtresi çalışıyor. Devam etmeden önce takım senkronizasyonu yapın.</p>
+    </div>
+  </div>
+
+  <div class="step-box">
+    <h4>Adım 5 · Blur Branch'i Aç, Kodu Kopyala</h4>
+    <div class="actors"><span class="actor c1">🟢 Contributor 1 (ve SADECE Contributor 1)</span></div>
+    <p><strong>5.a</strong> — Branch aç:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>git switch main
+git pull origin main
+git switch -c feat/blur</pre>
+
+    <p><strong>5.b</strong> — Yeni dosya oluştur: <span class="file-path">src/photokit/filters/blur.py</span></p>
+    <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from PIL import Image, ImageFilter
+from .base import Filter
+
+
+class BlurFilter(Filter):
+    name = "blur"
+
+    def apply(self, img: Image.Image, **kwargs) -> Image.Image:
+        radius = kwargs.get("radius", 2)
+        return img.filter(ImageFilter.GaussianBlur(radius=radius))</pre>
+
+    <p><strong>5.c</strong> — Mevcut dosyayı düzenle: <span class="file-path">src/photokit/registry.py</span> — <strong>içeriği tamamen aşağıdakiyle değiştir</strong>:</p>
+    <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from .filters.base import Filter
+from .filters.grayscale import GrayscaleFilter
+from .filters.blur import BlurFilter  # &lt;-- YENI IMPORT
+
+FILTERS: dict[str, type[Filter]] = {
+    "grayscale": GrayscaleFilter,
+    "blur": BlurFilter,  # &lt;-- YENI KAYIT
+}
+
+
+def get_filter(name: str) -> Filter:
+    if name not in FILTERS:
+        available = ", ".join(FILTERS.keys())
+        raise ValueError(f"Unknown filter: {name!r}. Available: {available}")
+    return FILTERS[name]()</pre>
+
+    <p><strong>5.d</strong> — Lokalde test et, commit et, push et, PR aç:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># Test
+uv run photokit list
+# grayscale, blur gorunmeli
+uv run photokit apply blur sample_images/test.jpg blur_test.jpg --radius 5
+# blur_test.jpg gercekten bulanik mi?
+
+# Commit + push
+git add src/photokit/filters/blur.py src/photokit/registry.py
+git commit -m "feat: add blur filter with configurable radius"
+git push -u origin feat/blur
+
+# PR aç (issue numarasini kendi numarana gore degistir)
+gh pr create \
+  --title "feat: add blur filter with configurable radius" \
+  --body "Implements Gaussian blur. Supports --radius flag. Closes #1"</pre>
+  </div>
+
+  <div class="step-box">
+    <h4>Adım 6 · Sepia Branch'i Aç (Adım 5 ile EŞZAMANLI!)</h4>
+    <div class="actors"><span class="actor c2">🔵 Contributor 2 (ve SADECE Contributor 2)</span></div>
+    <div class="callout warn">
+      <p><strong>Önemli:</strong> Contributor 2 bu adımı <strong>Contributor 1'in adım 5'i bitirmesini beklemeden</strong> başlatır. İki kişi aynı anda <code class="inline">main</code>'den branch açmalı ki conflict gerçek zamanlı oluşsun.</p>
+    </div>
+
+    <p><strong>6.a</strong> — Branch aç:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>git switch main
+git pull origin main
+git switch -c feat/sepia</pre>
+
+    <p><strong>6.b</strong> — Yeni dosya: <span class="file-path">src/photokit/filters/sepia.py</span></p>
+    <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from PIL import Image
+from .base import Filter
+
+
+class SepiaFilter(Filter):
+    name = "sepia"
+
+    def apply(self, img: Image.Image, **kwargs) -> Image.Image:
+        img = img.convert("RGB")
+        pixels = img.load()
+        width, height = img.size
+        for py in range(height):
+            for px in range(width):
+                r, g, b = pixels[px, py]
+                tr = int(0.393 * r + 0.769 * g + 0.189 * b)
+                tg = int(0.349 * r + 0.686 * g + 0.168 * b)
+                tb = int(0.272 * r + 0.534 * g + 0.131 * b)
+                pixels[px, py] = (min(255, tr), min(255, tg), min(255, tb))
+        return img</pre>
+
+    <p><strong>6.c</strong> — <span class="file-path">src/photokit/registry.py</span> — <strong>içeriği tamamen aşağıdakiyle değiştir</strong> (DİKKAT: Contributor 1 de aynı dosyayı değiştiriyor, conflict buradan çıkacak):</p>
+    <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from .filters.base import Filter
+from .filters.grayscale import GrayscaleFilter
+from .filters.sepia import SepiaFilter  # &lt;-- YENI IMPORT
+
+FILTERS: dict[str, type[Filter]] = {
+    "grayscale": GrayscaleFilter,
+    "sepia": SepiaFilter,  # &lt;-- YENI KAYIT
+}
+
+
+def get_filter(name: str) -> Filter:
+    if name not in FILTERS:
+        available = ", ".join(FILTERS.keys())
+        raise ValueError(f"Unknown filter: {name!r}. Available: {available}")
+    return FILTERS[name]()</pre>
+
+    <p><strong>6.d</strong> — Test, commit, push, PR:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>uv run photokit apply sepia sample_images/test.jpg sepia_test.jpg
+# sepia_test.jpg kahve tonunda mi?
+
+git add src/photokit/filters/sepia.py src/photokit/registry.py
+git commit -m "feat: add sepia tone filter"
+git push -u origin feat/sepia
+
+gh pr create \
+  --title "feat: add sepia tone filter" \
+  --body "Implements classic sepia tone conversion. Closes #2"</pre>
+  </div>
+
+  <div class="step-box">
+    <h4>Adım 7 · Çapraz Code Review</h4>
+    <div class="actors"><span class="actor c1">🟢 C1</span> review eder <span class="actor c2">🔵 C2</span>'nin PR'ını &nbsp;·&nbsp; <span class="actor c2">🔵 C2</span> review eder <span class="actor c1">🟢 C1</span>'in PR'ını</div>
+    <p>Herkes diğerinin PR'ını lokalde çekip test eder. Örnek: <span class="actor c1">🟢 C1</span>'in bakış açısından <span class="actor c2">🔵 C2</span>'nin PR'ını review etmek:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># C2'nin PR'inin numarasini kendi durumunla degistir (ornek: 2)
+gh pr checkout 2
+uv sync
+uv run photokit apply sepia sample_images/test.jpg review_sepia.jpg
+# Gorsel kontrol: sepia renkleri normal mi?
+
+# Onayla (veya --request-changes ile iste)
+gh pr review 2 --approve --body "Sepia renkleri güzel geliyor, approve."
+
+# Kendi işine dön
+git switch feat/blur  # kendi branch'ine</pre>
+    <p><span class="actor c2">🔵 C2</span> da aynısını <span class="actor c1">🟢 C1</span>'in PR'ı için yapar.</p>
+  </div>
+
+  <div class="step-box">
+    <h4>Adım 8 · İlk PR'ı Merge Et</h4>
+    <div class="actors"><span class="actor maintainer">🟣 Sadece Maintainer</span></div>
+    <p>Maintainer ilk PR'ı (genelde önce açılan / önce review biten) merge eder. Örnek: blur PR'ı:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>gh pr list
+gh pr merge 1 --squash --delete-branch</pre>
+    <div class="callout info">
+      <p><strong>Ne oldu:</strong> Artık <code class="inline">main</code>'de blur filter var. GitHub <span class="actor c2">🔵 C2</span>'nin sepia PR'ında <em>"This branch has conflicts that must be resolved"</em> uyarısını gösterecek.</p>
+    </div>
+  </div>
+
+  <div class="step-box">
+    <h4>Adım 9 · Conflict'i Çöz</h4>
+    <div class="actors"><span class="actor c2">🔵 Sadece Contributor 2</span></div>
+    <p><strong>9.a</strong> — Main'i çek, branch'e merge et:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>git switch feat/sepia
+git fetch origin
+git merge origin/main</pre>
+    <p>Çıktı:</p>
+    <pre class="code"><span class="lang">text</span><button class="copy">Kopyala</button>Auto-merging src/photokit/registry.py
+CONFLICT (content): Merge conflict in src/photokit/registry.py
+Automatic merge failed; fix conflicts and then commit the result.</pre>
+
+    <p><strong>9.b</strong> — <span class="file-path">src/photokit/registry.py</span>'yi editörde aç. Şunu göreceksin:</p>
+    <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from .filters.base import Filter
+from .filters.grayscale import GrayscaleFilter
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+from .filters.blur import BlurFilter
+=======
+from .filters.sepia import SepiaFilter
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feat/sepia
+
+FILTERS: dict[str, type[Filter]] = {
+    "grayscale": GrayscaleFilter,
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+    "blur": BlurFilter,
+=======
+    "sepia": SepiaFilter,
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feat/sepia
+}</pre>
+
+    <p><strong>9.c</strong> — Dosyanın tüm içeriğini aşağıdakiyle değiştir (marker'lar yok, iki filtre de kayıtlı):</p>
+    <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from .filters.base import Filter
+from .filters.grayscale import GrayscaleFilter
+from .filters.blur import BlurFilter
+from .filters.sepia import SepiaFilter
+
+FILTERS: dict[str, type[Filter]] = {
+    "grayscale": GrayscaleFilter,
+    "blur": BlurFilter,
+    "sepia": SepiaFilter,
+}
+
+
+def get_filter(name: str) -> Filter:
+    if name not in FILTERS:
+        available = ", ".join(FILTERS.keys())
+        raise ValueError(f"Unknown filter: {name!r}. Available: {available}")
+    return FILTERS[name]()</pre>
+
+    <p><strong>9.d</strong> — Test et, commit et, push et:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># Her iki filtre de çalışıyor mu?
+uv run photokit list
+# grayscale, blur, sepia - hepsi olmali
+
+uv run photokit apply blur sample_images/test.jpg x.jpg --radius 3
+uv run photokit apply sepia sample_images/test.jpg y.jpg
+
+# Commit + push (force-push DEGIL, normal push)
+git add src/photokit/registry.py
+git commit -m "chore: merge main and resolve registry conflict"
+git push</pre>
+    <p>PR sayfasına git — "conflicts" uyarısı gitmiş olmalı, CI yeşil, merge butonu aktif.</p>
+  </div>
+
+  <div class="step-box">
+    <h4>Adım 10 · İkinci PR'ı Merge Et</h4>
+    <div class="actors"><span class="actor c1">🟢 C1</span> tekrar approve atar → <span class="actor maintainer">🟣 Maintainer</span> merge eder</div>
+    <p>Conflict çözümü sonrası <span class="actor c1">🟢 C1</span> PR'ı gözden geçirip tekrar approve eder (yeni merge commit'i var):</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>gh pr review 2 --approve --body "Conflict güzel çözülmüş, merge için hazır."</pre>
+
+    <p>Sonra Maintainer merge eder:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>gh pr merge 2 --squash --delete-branch</pre>
+  </div>
+
+  <div class="step-box">
+    <h4>Adım 11 · Herkes Senkron</h4>
+    <div class="actors"><span class="actor all">⚪ Tüm Takım</span></div>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>git switch main
+git pull origin main
+uv sync
+
+uv run photokit list
+# grayscale, blur, sepia - hepsi gorunmeli
+
+# Kendi silinen branch'lerini lokalde temizle
+git branch -d feat/blur 2&gt;/dev/null
+git branch -d feat/sepia 2&gt;/dev/null</pre>
+  </div>
+
+  <div class="step-box">
+    <h4>Adım 12 · Invert Filtresi</h4>
+    <div class="actors"><span class="actor c3">🟡 Contributor 3 (varsa)</span></div>
+    <p>Bu adımda <code class="inline">main</code>'de zaten 3 filtre var (grayscale, blur, sepia). Contributor 3 kendisininkini ekliyor.</p>
+
+    <p><strong>12.a</strong> — Branch aç:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>git switch main
+git pull origin main
+git switch -c feat/invert</pre>
+
+    <p><strong>12.b</strong> — Yeni dosya: <span class="file-path">src/photokit/filters/invert.py</span></p>
+    <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from PIL import Image, ImageOps
+from .base import Filter
+
+
+class InvertFilter(Filter):
+    name = "invert"
+
+    def apply(self, img: Image.Image, **kwargs) -> Image.Image:
+        # ImageOps.invert RGBA'yi desteklemez, alpha kanalini koruyarak tersle
+        if img.mode == "RGBA":
+            r, g, b, a = img.split()
+            rgb = Image.merge("RGB", (r, g, b))
+            inverted = ImageOps.invert(rgb)
+            r2, g2, b2 = inverted.split()
+            return Image.merge("RGBA", (r2, g2, b2, a))
+        return ImageOps.invert(img.convert("RGB"))</pre>
+
+    <p><strong>12.c</strong> — <span class="file-path">src/photokit/registry.py</span> — mevcut 3 filtreye invert'i ekle:</p>
+    <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from .filters.base import Filter
+from .filters.grayscale import GrayscaleFilter
+from .filters.blur import BlurFilter
+from .filters.sepia import SepiaFilter
+from .filters.invert import InvertFilter  # &lt;-- YENI IMPORT
+
+FILTERS: dict[str, type[Filter]] = {
+    "grayscale": GrayscaleFilter,
+    "blur": BlurFilter,
+    "sepia": SepiaFilter,
+    "invert": InvertFilter,  # &lt;-- YENI KAYIT
+}
+
+
+def get_filter(name: str) -> Filter:
+    if name not in FILTERS:
+        available = ", ".join(FILTERS.keys())
+        raise ValueError(f"Unknown filter: {name!r}. Available: {available}")
+    return FILTERS[name]()</pre>
+
+    <p><strong>12.d</strong> — Test, commit, push, PR:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>uv run photokit apply invert sample_images/test.jpg invert_test.jpg
+# invert_test.jpg negatif (film) gorunumunde olmali
+
+git add src/photokit/filters/invert.py src/photokit/registry.py
+git commit -m "feat: add color invert filter"
+git push -u origin feat/invert
+
+gh pr create \
+  --title "feat: add color invert filter" \
+  --body "Implements RGB color inversion. Preserves alpha channel for RGBA images. Closes #3"</pre>
+  </div>
+
+  <div class="step-box">
+    <h4>Adım 13 · Resize Filtresi</h4>
+    <div class="actors"><span class="actor c4">🟠 Contributor 4 (varsa)</span></div>
+    <p>Contributor 4 resize filtresini ekler. CLI'da <code class="inline">--width</code> opsiyonu zaten tanımlı, sadece filtre kodunu yazmak yeter.</p>
+
+    <p><strong>13.a</strong> — Branch aç:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>git switch main
+git pull origin main
+git switch -c feat/resize</pre>
+
+    <p><strong>13.b</strong> — Yeni dosya: <span class="file-path">src/photokit/filters/resize.py</span></p>
+    <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from PIL import Image
+from .base import Filter
+
+
+class ResizeFilter(Filter):
+    name = "resize"
+
+    def apply(self, img: Image.Image, **kwargs) -> Image.Image:
+        width = kwargs.get("width", 800)
+        if width &lt;= 0:
+            raise ValueError("Width must be a positive integer")
+
+        # Aspect ratio'yu koruyarak yeniden boyutlandir
+        ratio = width / img.width
+        height = int(img.height * ratio)
+        return img.resize((width, height), Image.Resampling.LANCZOS)</pre>
+
+    <p><strong>13.c</strong> — <span class="file-path">src/photokit/registry.py</span> — mevcut 4 filtreye resize'ı ekle:</p>
+    <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from .filters.base import Filter
+from .filters.grayscale import GrayscaleFilter
+from .filters.blur import BlurFilter
+from .filters.sepia import SepiaFilter
+from .filters.invert import InvertFilter
+from .filters.resize import ResizeFilter  # &lt;-- YENI IMPORT
+
+FILTERS: dict[str, type[Filter]] = {
+    "grayscale": GrayscaleFilter,
+    "blur": BlurFilter,
+    "sepia": SepiaFilter,
+    "invert": InvertFilter,
+    "resize": ResizeFilter,  # &lt;-- YENI KAYIT
+}
+
+
+def get_filter(name: str) -> Filter:
+    if name not in FILTERS:
+        available = ", ".join(FILTERS.keys())
+        raise ValueError(f"Unknown filter: {name!r}. Available: {available}")
+    return FILTERS[name]()</pre>
+
+    <p><strong>13.d</strong> — Test, commit, push, PR:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>uv run photokit apply resize sample_images/test.jpg resize_test.jpg --width 400
+# resize_test.jpg 400px genisliginde olmali, aspect ratio korunmali
+
+# Hata testi (width=0 ValueError donmeli)
+uv run photokit apply resize sample_images/test.jpg fail.jpg --width 0 || echo "Hata dondu, guzel"
+
+git add src/photokit/filters/resize.py src/photokit/registry.py
+git commit -m "feat: add resize filter with width parameter
+
+Preserves aspect ratio based on target width.
+Validates width > 0 and raises ValueError otherwise."
+git push -u origin feat/resize
+
+gh pr create \
+  --title "feat: add resize filter with width parameter" \
+  --body "Implements image resize with --width flag. Preserves aspect ratio. Validates width > 0. Closes #4"</pre>
+  </div>
+
+  <div class="callout warn">
+    <h4>Paralel Çalışma → İkinci Conflict</h4>
+    <p>Eğer <span class="actor c3">🟡 C3</span> ve <span class="actor c4">🟠 C4</span> Adım 12 ve 13'ü <strong>aynı anda</strong> yaparsa, registry.py tekrar çakışır (C1-C2 senaryosunun aynısı). Bu iyi bir pratik tekrarıdır — ikinci PR'ı merge eden kişi conflict'i çözer. Sıralı çalışırlarsa conflict olmaz.</p>
+  </div>
+
+  <div class="step-box">
+    <h4>Adım 14 · Final Senkronizasyon ve Release</h4>
+    <div class="actors"><span class="actor all">⚪ Tüm Takım</span> → <span class="actor maintainer">🟣 Maintainer</span></div>
+    <p>Tüm PR'lar merge oldu. Herkes main'i günceller:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>git switch main
+git pull origin main
+uv sync
+
+uv run photokit list
+# grayscale, blur, sepia, invert, resize - hepsi gorunmeli
+
+# Tum filtreleri bir resimde dene
+uv run photokit apply grayscale sample_images/test.jpg out_gri.jpg
+uv run photokit apply blur     sample_images/test.jpg out_blur.jpg --radius 3
+uv run photokit apply sepia    sample_images/test.jpg out_sepia.jpg
+uv run photokit apply invert   sample_images/test.jpg out_inv.jpg
+uv run photokit apply resize   sample_images/test.jpg out_sml.jpg --width 200</pre>
+
+    <p>Maintainer v1.0.0 release'ini çıkarır:</p>
+    <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>git tag -a v1.0.0 -m "First release: 5 filters ready"
+git push origin v1.0.0
+
+gh release create v1.0.0 \
+  --title "v1.0.0 — First Public Release" \
+  --generate-notes</pre>
+  </div>
+
+  <hr style="margin: 30px 0;">
+
+  <h3>Aşağısı Detaylı Referans</h3>
+  <p>Yukarıdaki script'in her adımı için arkasındaki kavramlar aşağıda. Script'i uygulayarak konuları öğrenin, sonra bu bölümü referans olarak kullanın.</p>
+
+  <h3>Hedef</h3>
+  <p>Her contributor bir filtre implement edecek. <strong>Blur</strong> ve <strong>Sepia</strong> en az iki kişi arasında paylaşılmalı — çünkü bu ikisi <code class="inline">registry.py</code>'de çakışacak (bilerek tasarlandı).</p>
+
+  <h3>Issue Backlog</h3>
+  <table>
+    <thead><tr><th>#</th><th>Feature</th><th>Zorluk</th><th>Dosya</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Blur filter</td><td>Kolay</td><td>filters/blur.py + registry.py</td></tr>
+      <tr><td>2</td><td>Sepia filter</td><td>Kolay</td><td>filters/sepia.py + registry.py</td></tr>
+      <tr><td>3</td><td>Invert filter</td><td>Kolay</td><td>filters/invert.py + registry.py</td></tr>
+      <tr><td>4</td><td>Resize filter</td><td>Orta</td><td>filters/resize.py + registry.py</td></tr>
+      <tr><td>5</td><td>Rotate filter</td><td>Kolay</td><td>filters/rotate.py + registry.py</td></tr>
+      <tr><td>6</td><td>Flip filter</td><td>Kolay</td><td>filters/flip.py + registry.py</td></tr>
+      <tr><td>7</td><td>Watermark (text)</td><td>Orta</td><td>filters/watermark.py + registry.py</td></tr>
+      <tr><td>8</td><td>Edge detection</td><td>Orta</td><td>filters/edge.py + registry.py</td></tr>
+      <tr><td>9</td><td>Batch mode (klasör)</td><td>Zor</td><td>cli.py</td></tr>
+      <tr><td>10</td><td>Her filtreye test</td><td>Orta</td><td>tests/</td></tr>
+      <tr><td>11</td><td>README'yi zenginleştir</td><td>Kolay</td><td>README.md</td></tr>
+      <tr><td>12</td><td>CI workflow ekle</td><td>Orta</td><td>.github/workflows/ci.yml</td></tr>
+    </tbody>
+  </table>
+
+  <h3>PR Lifecycle Şeması</h3>
+  <div class="diagram">
+    <pre class="mermaid">
+sequenceDiagram
+    participant C as Contributor
+    participant R as Remote (GitHub)
+    participant M as Maintainer
+    C->>C: git switch -c feat/blur
+    C->>C: kod yaz, commit at
+    C->>R: git push
+    C->>R: gh pr create
+    R->>M: PR bildirimi
+    M->>R: review, yorum, approve
+    R->>C: review sonucu
+    C->>R: düzeltme push (gerekirse)
+    M->>R: gh pr merge
+    R->>C: branch silindi
+    </pre>
+  </div>
+
+  <h3>Adım Adım: Blur Filtresi Örneği</h3>
+  <p><strong>1 · Issue'yu al.</strong></p>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># Issue'yu kendine assign et
+gh issue list
+gh issue edit 1 --add-assignee @me</pre>
+
+  <p><strong>2 · Branch aç.</strong> Branch ismi konvansiyonu: <code class="inline">feat/&lt;kisa-aciklama&gt;</code> veya <code class="inline">fix/&lt;kisa-aciklama&gt;</code>.</p>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>git switch main
+git pull origin main
+git switch -c feat/blur-filter</pre>
+
+  <p><strong>3 · Kodu yaz.</strong> <code class="inline">src/photokit/filters/blur.py</code>:</p>
+  <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from PIL import Image, ImageFilter
+from .base import Filter
+
+
+class BlurFilter(Filter):
+    name = "blur"
+
+    def apply(self, img: Image.Image, **kwargs) -> Image.Image:
+        radius = kwargs.get("radius", 2)
+        return img.filter(ImageFilter.GaussianBlur(radius=radius))</pre>
+
+  <p><strong>4 · Registry'ye ekle.</strong> <code class="inline">src/photokit/registry.py</code>:</p>
+  <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from .filters.base import Filter
+from .filters.grayscale import GrayscaleFilter
+from .filters.blur import BlurFilter  # EKLEN+DI
+
+FILTERS: dict[str, type[Filter]] = {
+    "grayscale": GrayscaleFilter,
+    "blur": BlurFilter,  # EKLEN+DI
+}</pre>
+
+  <p><strong>5 · Test et lokalde.</strong></p>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>uv run photokit apply blur sample_images/test.jpg blur_test.jpg --radius 5
+# blur_test.jpg acilip buzlu gorunuyorsa tamam</pre>
+
+  <p><strong>6 · Commit ve push.</strong> Conventional Commit formatı kullanın:</p>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>git add src/photokit/filters/blur.py src/photokit/registry.py
+git status
+git commit -m "feat: add blur filter with configurable radius
+
+Uses Pillow's GaussianBlur. Radius is tunable via
+the --radius CLI flag (default: 2).
+
+Closes #1"
+git push -u origin feat/blur-filter</pre>
+
+  <p><strong>7 · PR aç.</strong></p>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>gh pr create \
+  --title "feat: add blur filter with configurable radius" \
+  --body "Implements blur filter for issue #1. Supports --radius parameter. Closes #1" \
+  --assignee @me</pre>
+
+  <p>Veya GitHub UI'dan:</p>
+  <ol>
+    <li>Repo sayfasında "Compare & pull request" butonuna bas</li>
+    <li>Başlık: <code class="inline">feat: add blur filter with configurable radius</code> (İngilizce, imperative)</li>
+    <li>Açıklamada issue'yu referansla: <code class="inline">Closes #1</code></li>
+    <li>Reviewer ata (takım arkadaşın)</li>
+    <li>"Create pull request"</li>
+  </ol>
+
+  <h3>Conventional Commits Hızlı Referans</h3>
+  <table>
+    <thead><tr><th>Prefix</th><th>Kullanım</th></tr></thead>
+    <tbody>
+      <tr><td><code class="inline">feat:</code></td><td>Yeni özellik</td></tr>
+      <tr><td><code class="inline">fix:</code></td><td>Bug düzeltmesi</td></tr>
+      <tr><td><code class="inline">docs:</code></td><td>Sadece döküman değişikliği</td></tr>
+      <tr><td><code class="inline">refactor:</code></td><td>Davranışı değiştirmeyen refactor</td></tr>
+      <tr><td><code class="inline">test:</code></td><td>Test eklemek veya düzeltmek</td></tr>
+      <tr><td><code class="inline">chore:</code></td><td>Build, tooling, bakım</td></tr>
+    </tbody>
+  </table>
+
+  <h3>İyi Commit Mesajı Yazmak</h3>
+  <p>Commit mesajı sadece sana değil — 6 ay sonra o satırı görüp "bu neden böyle?" diye <code class="inline">git blame</code> açan kişiye yazdığın bir açıklamadır. İyi commit mesajı, kodun tarihçesi olur.</p>
+
+  <h4>Bir Commit Mesajının Anatomisi</h4>
+  <pre class="code"><span class="lang">text</span><button class="copy">Kopyala</button>feat: add blur filter with configurable radius
+
+Implements Gaussian blur using Pillow's ImageFilter.GaussianBlur.
+Users can control intensity via the --radius CLI flag (default: 2).
+
+Also registers the new filter in registry.py. Future filter PRs
+(sepia, invert) will need to update the same file — expect
+merge conflicts.
+
+Closes #1</pre>
+
+  <p>Üç bölüm:</p>
+  <ul>
+    <li><strong>1. satır (subject):</strong> Conventional Commit prefix'iyle başlar, emir kipinde, <strong>≤50 karakter</strong>, sonunda nokta yok.</li>
+    <li><strong>Boş satır:</strong> Subject ile body arasında olmak zorunda. Git subject'i buradan ayırır.</li>
+    <li><strong>Body (opsiyonel ama önerilir):</strong> <em>Ne</em> ve <em>Neden</em> — "nasıl"ı kod zaten söylüyor. 72 karakterde satır kaydır.</li>
+  </ul>
+
+  <h4>Emir Kipi (Imperative Mood) Kuralı</h4>
+  <p>Git'in kendi konvansiyonu. İngilizce yazacağız (kural), ve <em>"If applied, this commit will ______"</em> cümlesini tamamlayacak şekilde yaz:</p>
+
+  <table>
+    <thead><tr><th style="color:#dc2626">Yanlış (Past / Continuous)</th><th style="color:#16a34a">Doğru (Imperative)</th></tr></thead>
+    <tbody>
+      <tr><td>feat: added blur filter</td><td>feat: add blur filter</td></tr>
+      <tr><td>fix: fixing resize bug</td><td>fix: handle zero-width in resize filter</td></tr>
+      <tr><td>docs: updated readme</td><td>docs: update readme with new filter list</td></tr>
+      <tr><td>chore: version bump to 1.1</td><td>chore: bump version to 1.1</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <h4>Dil Kuralı</h4>
+    <p>Bu workshop'ta ve takım repolarında: <strong>kod ve commit mesajları İngilizce</strong>, workshop anlatımı ve sözlü tartışma Türkçe. Commit tarihçesi açık kaynak dünyasının ortak dili İngilizce olduğu için bu standarttır — CI bot'ları, changelog araçları, release-notes üreticileri hepsi İngilizce bekler.</p>
+  </div>
+
+  <h4>Kötü vs İyi Örnekler</h4>
+
+  <p><strong>Kötü commit mesajları</strong> — bunlar gerçekten repolarda var:</p>
+  <pre class="code"><span class="lang">text</span><button class="copy">Kopyala</button>fix
+update stuff
+asdasd
+WIP
+fixing typo
+another fix
+final
+works now
+aaaa
+filter</pre>
+
+  <p>Bu mesajların hiçbiri ne değiştiğini söylemiyor. 3 ay sonra <code class="inline">git log</code> bir gürültü yığınına dönüşür ve <code class="inline">git blame</code> işe yaramaz.</p>
+
+  <p><strong>İyi commit mesajı örneği:</strong></p>
+  <pre class="code"><span class="lang">text</span><button class="copy">Kopyala</button>fix: return meaningful error for resize width=0
+
+When width=0 was passed, Pillow's thumbnail() call raised
+"Image has 0 size" — a cryptic internal error that didn't
+help users understand what went wrong.
+
+Now we validate width > 0 upfront and raise a clear
+ValueError("Width must be a positive integer") so the CLI
+can show a friendly message.
+
+Fixes #14</pre>
+
+  <h4>Altın Kurallar</h4>
+  <ul>
+    <li><strong>Bir commit = bir mantıksal değişiklik.</strong> Hem feature hem refactor aynı commit'te olmasın.</li>
+    <li><strong>"fix typo" commit'lerini squash et.</strong> Push etmeden önce <code class="inline">git rebase -i</code> ile birleştir.</li>
+    <li><strong>Issue referansla:</strong> <code class="inline">Closes #5</code> veya <code class="inline">Fixes #14</code>. PR merge olunca issue otomatik kapanır.</li>
+    <li><strong>Breaking change varsa:</strong> Body'de <code class="inline">BREAKING CHANGE:</code> satırı ekle, semver major bump gerekir.</li>
+    <li><strong>"Neden" kritik.</strong> "Ne" kod'da var; "neden" sadece mesajda yaşar.</li>
+  </ul>
+
+  <h3>İyi Pull Request Açıklaması</h3>
+  <p>PR açıklaması, reviewer'ın 3 soruya cevap vermesini sağlar: <strong>(1) Ne değişiyor?</strong> <strong>(2) Neden?</strong> <strong>(3) Nasıl test edeyim?</strong> İyi açıklama = hızlı review = hızlı merge.</p>
+
+  <h4>Önerilen PR Açıklaması Şablonu</h4>
+  <p>PR başlığı commit mesajı gibi davranır — <strong>İngilizce, imperative</strong>. Gövde Türkçe açıklama + İngilizce kod/komut olabilir.</p>
+
+  <pre class="code"><span class="lang">markdown</span><button class="copy">Kopyala</button>Başlık: feat: add blur filter with configurable radius
+
+## Ne?
+Blur filter implementasyonu. Pillow'un ImageFilter.GaussianBlur
+fonksiyonunu kullanarak resme bulanıklık uygular. `--radius`
+parametresi destekler (varsayılan: 2).
+
+## Neden?
+Issue #1 — kullanıcılar bulanık efekt istedi. Ayrıca bu PR,
+registry.py'nin ikinci filtreyi nasıl kaydettiğini gösteren
+ilk örnek oluyor.
+
+## Nasıl Test Edeyim?
+```bash
+uv sync
+uv run photokit apply blur sample_images/test.jpg out.jpg --radius 10
+```
+`out.jpg` görsel olarak bulanık olmalı. `--radius 0` ile
+çalıştırıp anlamlı hata döndüğünü de kontrol et.
+
+## Ekran Görüntüsü
+| Önce | Sonra (radius=10) |
+|------|-------------------|
+| ![](docs/before.jpg) | ![](docs/after.jpg) |
+
+## Checklist
+- [x] Unit test yazıldı (`tests/test_blur.py`)
+- [x] Lokalde CI yeşil (`uv run pytest`)
+- [x] README'ye örnek eklendi
+- [ ] Breaking change yok
+
+Closes #1</pre>
+
+  <h4>PR Template Dosyası</h4>
+  <p>Her PR'da bu yapıyı otomatik göstermek için repo'ya bir şablon koy. Kullanıcı PR açtığında açıklama alanı otomatik bu şablonla dolu gelir.</p>
+
+  <p><code class="inline">.github/pull_request_template.md</code>:</p>
+  <pre class="code"><span class="lang">markdown</span><button class="copy">Kopyala</button>## Ne?
+&lt;!-- Bu PR ne yapiyor? 2-3 cumle --&gt;
+
+## Neden?
+&lt;!-- Hangi problemi cozer? Hangi issue'yu kapatir? --&gt;
+
+## Nasil Test Edeyim?
+&lt;!-- Adim adim, reviewer'in makineye kopyalayabilecegi komutlar --&gt;
+
+## Checklist
+- [ ] Testler eklendi veya guncellendi
+- [ ] CI yesil
+- [ ] Dokumantasyon guncellendi (gerekiyorsa)
+- [ ] Breaking change varsa BREAKING CHANGE notu
+
+Closes #</pre>
+
+  <h4>Kötü vs İyi PR Açıklaması</h4>
+
+  <p><strong>Kötü:</strong></p>
+  <div class="callout conflict">
+    <p><strong>Başlık:</strong> update<br>
+    <strong>Açıklama:</strong> yeni filter</p>
+  </div>
+
+  <p>Reviewer hiçbir şey anlamıyor — kod'a daldırılır, bağlam yok, test etmesi gereken senaryoları bilmiyor.</p>
+
+  <p><strong>İyi:</strong></p>
+  <div class="callout task">
+    <p><strong>Başlık:</strong> feat: blur filter with configurable radius<br>
+    <strong>Açıklama:</strong> yukarıdaki şablonu izliyor, 3 soruya cevap veriyor, test komutu var, issue'yu bağlıyor.</p>
+  </div>
+
+  <h4>Küçük PR, Mutlu Takım</h4>
+  <p>PR'lar <strong>400 satırın altında</strong> olsun. Araştırmalar gösteriyor ki 400 satırı aşan PR'larda bug yakalama oranı belirgin şekilde düşüyor. Büyük PR'ların sorunları:</p>
+  <ul>
+    <li>Review edilmez (okuyan yorulur → onay rubber-stamp olur)</li>
+    <li>Geç merge olur → conflict riski büyür</li>
+    <li>Bir şey kırılırsa <code class="inline">git bisect</code> zorlaşır</li>
+    <li>Revert gerekirse yan hasar çıkar</li>
+  </ul>
+  <p>Büyük bir feature geliyorsa <strong>parçala</strong>: birbirine bağımlı 3 küçük PR, tek bir devasa PR'dan her zaman iyidir.</p>
+
+  <div class="callout warn">
+    <h4>Anti-pattern</h4>
+    <p>PR açarken "bu arada şunu da temizledim" diye 5 ayrı refactor eklemeyin. Her PR <strong>tek bir iş</strong>e odaklanmalı. Refactor ayrı PR, feature ayrı PR, formatting ayrı PR.</p>
+  </div>
+</section>
+
+<section id="bolum-07">
+  <h2>07 · Code Review <span class="duration">~15 dk</span></h2>
+
+  <p>Review = başka bir göz. Bug yakalamaktan çok kodu takım için anlaşılır kılar.</p>
+
+  <h3>Review Yapma (Komut Satırından)</h3>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># Aktif PR'lari listele
+gh pr list
+
+# PR'i detayli gor
+gh pr view 5
+
+# PR'in kodunu lokalde kontrol et
+gh pr checkout 5
+uv sync
+uv run photokit list   # yeni filtre gozukuyor mu?
+
+# Review yorumu ekle
+gh pr review 5 --comment --body "Kodda sorun yok, sadece radius icin dogrulama ekleyelim."
+
+# Onayla
+gh pr review 5 --approve --body "Iyi is! Merge edilebilir."
+
+# Degisiklik iste
+gh pr review 5 --request-changes --body "Blur 0 olursa hata verir, kontrol ekler misin?"</pre>
+
+  <h3>Review Yapma (UI'dan)</h3>
+  <ol>
+    <li>PR sayfasında <strong>Files changed</strong> sekmesine git</li>
+    <li>Satır başına tıkla → yorum ekle</li>
+    <li>Birden fazla yorum için "Start a review" → sonunda "Submit review"</li>
+    <li>3 seçenek: <em>Comment</em> (sadece yorum), <em>Approve</em> (onay), <em>Request changes</em> (düzeltme iste)</li>
+  </ol>
+
+  <h3>İyi Review Prensipleri</h3>
+  <ul>
+    <li><strong>Kişiyi değil, kodu değerlendir.</strong> "Bu fonksiyon kafa karıştırıcı" değil, "Bu fonksiyonu X olarak adlandırsak daha net olur mu?"</li>
+    <li><strong>Öneri şekline sok.</strong> GitHub'da <code class="inline">```suggestion</code> blok'u kullanırsan contributor tek tıkla uygulayabilir.</li>
+    <li><strong>Opsiyonel yorumları işaretle.</strong> "nit:" prefix'i "bunu yapmasan da olur" demektir.</li>
+    <li><strong>Hızlı ol.</strong> PR açık kaldıkça rebase ağrısı büyür.</li>
+  </ul>
+
+  <h3>Suggestion Blok Örneği</h3>
+  <p>Review yorumunda şunu yazarsan:</p>
+  <pre class="code"><span class="lang">markdown</span><button class="copy">Kopyala</button>```suggestion
+radius = max(0, kwargs.get("radius", 2))
+```</pre>
+  <p>Contributor "Commit suggestion" butonunu tıklayarak değişikliği otomatik uygular.</p>
+
+  <div class="callout task">
+    <h4>Yap (Takımca)</h4>
+    <p>Her contributor en az 1 başka PR'a review yapmalı. Maintainer review'u approve olmadan merge etmemeli.</p>
+  </div>
+</section>
+
+<section id="bolum-08">
+  <h2>08 · Merge Conflict Senaryosu <span class="duration">~20 dk</span></h2>
+
+  <div class="callout conflict">
+    <h4>Planlı Conflict</h4>
+    <p>Blur ve Sepia filtreleri aynı anda geliştirildiğinde ikisi de <code class="inline">registry.py</code>'ye yeni satır ekleyecek. Biri merge olduktan sonra diğerinin PR'ında conflict çıkacak. Bu <strong>gerçek hayatta günlük</strong> bir senaryo.</p>
+  </div>
+
+  <h3>Kurulum</h3>
+  <p>İki contributor paralel çalışıyor:</p>
+  <ul>
+    <li><strong>Ayşe</strong>: <code class="inline">feat/blur-filter</code> branch'i, blur eklemiş</li>
+    <li><strong>Burak</strong>: <code class="inline">feat/sepia-filter</code> branch'i, sepia eklemiş</li>
+  </ul>
+  <p>İkisi de <code class="inline">registry.py</code>'deki <code class="inline">FILTERS</code> dict'ine kendi satırını eklemiş.</p>
+
+  <h3>Sıra 1: Ayşe'nin PR'ı Merge Olur</h3>
+  <p>Maintainer Ayşe'nin PR'ını merge eder. <code class="inline">main</code>'deki registry artık:</p>
+  <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>FILTERS = {
+    "grayscale": GrayscaleFilter,
+    "blur": BlurFilter,
+}</pre>
+
+  <h3>Sıra 2: Burak'ın PR'ı Conflict Verir</h3>
+  <p>GitHub otomatik olarak Burak'ın PR'ında <strong>"This branch has conflicts that must be resolved"</strong> uyarısını gösterir.</p>
+
+  <h3>Çözüm — Lokalde</h3>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># Burak'in makinesinde
+git switch feat/sepia-filter
+
+# main'i guncelle ve ustune getir
+git fetch origin
+git merge origin/main
+
+# Conflict mesaji:
+# CONFLICT (content): Merge conflict in src/photokit/registry.py</pre>
+
+  <p><code class="inline">registry.py</code> şuna benzeyecek:</p>
+  <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from .filters.base import Filter
+from .filters.grayscale import GrayscaleFilter
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+from .filters.blur import BlurFilter
+=======
+from .filters.sepia import SepiaFilter
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feat/sepia-filter
+
+FILTERS: dict[str, type[Filter]] = {
+    "grayscale": GrayscaleFilter,
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+    "blur": BlurFilter,
+=======
+    "sepia": SepiaFilter,
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feat/sepia-filter
+}</pre>
+
+  <p><strong>Doğru çözüm:</strong> İkisini de tut. Marker'ları sil, hem blur hem sepia kalsın:</p>
+  <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from .filters.base import Filter
+from .filters.grayscale import GrayscaleFilter
+from .filters.blur import BlurFilter
+from .filters.sepia import SepiaFilter
+
+FILTERS: dict[str, type[Filter]] = {
+    "grayscale": GrayscaleFilter,
+    "blur": BlurFilter,
+    "sepia": SepiaFilter,
+}</pre>
+
+  <p>Sonra:</p>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>git add src/photokit/registry.py
+
+# Testi calistir, bozulmamis mi bak
+uv run photokit list
+# grayscale, blur, sepia gorunuyor olmali
+
+git commit -m "chore: merge main, combine blur and sepia in registry"
+git push</pre>
+
+  <p>Push sonrası PR otomatik güncellenir, "conflicts" uyarısı kalkar, merge edilebilir hale gelir.</p>
+
+  <h3>Conflict Çözümünün Kuralları</h3>
+  <ul>
+    <li><strong>Her iki tarafı da okumadan silme.</strong> Yanlış seçim = kod kaybı.</li>
+    <li><strong>Testleri çalıştır</strong> push'tan önce.</li>
+    <li><strong>İkili şüphede takım arkadaşına sor.</strong></li>
+    <li><strong>Abort etmekten korkma:</strong> <code class="inline">git merge --abort</code> seni merge öncesine döndürür.</li>
+  </ul>
+
+  <h3>Alternatif: Rebase ile Çözüm</h3>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>git switch feat/sepia-filter
+git fetch origin
+git rebase origin/main
+# Conflict cik + coz
+git add src/photokit/registry.py
+git rebase --continue
+# Force push (sadece kendi branch'in oldugundan guvenli)
+git push --force-with-lease</pre>
+  <div class="callout warn">
+    <h4><code class="inline">--force-with-lease</code> vs <code class="inline">--force</code></h4>
+    <p><code class="inline">--force-with-lease</code> başkasının aynı branch'e push ettiğini fark eder ve durur. Her zaman <code class="inline">--force-with-lease</code> kullan, düz <code class="inline">--force</code> değil.</p>
+  </div>
+</section>
+
+<section id="bolum-09">
+  <h2>09 · Git Worktree <span class="duration">~20 dk</span></h2>
+
+  <p><strong>Problem:</strong> <code class="inline">feat/blur</code> branch'inde kodun yarıda. Takım arkadaşın "şu PR'ımı review eder misin?" dedi. Stash → switch → stash → switch — kafa karışıyor.</p>
+  <p><strong>Çözüm:</strong> İki branch'i aynı anda <em>iki ayrı klasörde</em> aç. Tek <code class="inline">.git</code>, çok working directory.</p>
+
+  <h3>Zihinsel Model</h3>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart LR
+    git[.git deposu] --> wt1[~/photokit<br/>main]
+    git --> wt2[~/photokit-blur<br/>feat/blur]
+    git --> wt3[~/photokit-review<br/>feat/sepia-from-teammate]
+    style git fill:#dbeafe,stroke:#2563eb
+    style wt1 fill:#fef9c3,stroke:#ca8a04
+    style wt2 fill:#dcfce7,stroke:#16a34a
+    style wt3 fill:#ede9fe,stroke:#7c3aed
+    </pre>
+  </div>
+
+  <h3>Temel Komutlar</h3>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># Yeni bir worktree olustur (mevcut bir branch icin)
+git worktree add ../photokit-review feat/sepia-from-teammate
+
+# Yeni bir branch olustur ve worktree olarak ac
+git worktree add -b feat/watermark ../photokit-watermark
+
+# Tum worktree'leri listele
+git worktree list
+
+# Isin bitince worktree'yi kaldir (dosyalari siler)
+git worktree remove ../photokit-review
+
+# Orphan metadata'yi temizle
+git worktree prune</pre>
+
+  <h3>Senaryo: Review + Kendi İşin</h3>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># Asil repo'dasin (branch: feat/blur), yarim kodlu
+cd ~/photokit
+
+# Arkadasin PR'ini review icin yeni worktree olustur
+gh pr checkout 7 --detach    # PR'in branch'ine geç
+
+# Aslinda daha iyisi: worktree ile paralel ac
+git fetch origin
+git worktree add ../photokit-review origin/feat/sepia-filter
+
+# Yeni terminal: review klasorune git
+cd ../photokit-review
+uv sync
+uv run photokit apply sepia sample_images/test.jpg test_sepia.jpg
+
+# Guzel gorunuyor, approve et
+gh pr review 7 --approve
+
+# Asil isine don
+cd ~/photokit   # hala feat/blur'dasın, hic stash yok
+
+# Review bitti, worktree'yi temizle
+git worktree remove ../photokit-review</pre>
+
+  <h3>Agent-Team Pattern (Senin Kullanım Şeklin)</h3>
+  <p>Birden fazla AI agent (veya paralel iş) aynı repo üzerinde çalıştığında her agent'a bir worktree ver:</p>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>git worktree add ../photokit-agent-blur    -b agent/blur
+git worktree add ../photokit-agent-resize  -b agent/resize
+git worktree add ../photokit-agent-tests   -b agent/tests
+
+# Her agent kendi klasoru icinde caligir, birbirine dokunmaz
+# PR'lar ayri ayri acilir, birlestirme kontrollu olur</pre>
+
+  <h3>Worktree Kuralları</h3>
+  <ul>
+    <li>Aynı branch iki worktree'de checkout edilemez (Git koruması).</li>
+    <li>Her worktree ayrı bir klasör — editörde ayrı window aç.</li>
+    <li>Silme = <code class="inline">git worktree remove</code>, <code class="inline">rm -rf</code> değil (metadata kalır).</li>
+    <li><code class="inline">.git</code> klasörü <strong>sadece</strong> ana worktree'de bulunur, diğerleri <code class="inline">.git</code> dosyası (file, not folder) içerir.</li>
+  </ul>
+
+  <div class="callout task">
+    <h4>Yap</h4>
+    <p>Her takım üyesi kendi aktif branch'indeyken bir takım arkadaşının branch'i için worktree oluştursun, oradan bir küçük test yapsın, sonra worktree'yi kaldırsın.</p>
+  </div>
+</section>
+
+<section id="bolum-10">
+  <h2>10 · GitHub Projects (Kanban) <span class="duration">~10 dk</span></h2>
+
+  <p>GitHub Projects = repo'ya entegre Kanban board. Issue'ları ve PR'ları kolonlara taşıyarak backlog yönetirsiniz. Jira/Trello benzeri ama repo içinde.</p>
+
+  <h3>Project Oluşturma</h3>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># CLI'dan (yeni v2 projects)
+gh project create --owner @me --title "PhotoKit Sprint 1"
+
+# Mevcut project'leri listele
+gh project list --owner @me
+
+# Issue'yu board'a ekle
+gh project item-add <span style="color:#f38ba8">PROJECT_ID</span> --url https://github.com/<span style="color:#f38ba8">user/repo/issues/1</span></pre>
+
+  <p>Veya UI'dan kolayca: <strong>Repo → Projects sekmesi → New project → Board</strong>.</p>
+
+  <h3>Önerilen Kolon Yapısı</h3>
+  <table>
+    <thead><tr><th>Kolon</th><th>Anlamı</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Backlog</strong></td><td>Fikirler ve planlanmış işler</td></tr>
+      <tr><td><strong>Ready</strong></td><td>Başlanmaya hazır, detaylı issue'lar</td></tr>
+      <tr><td><strong>In Progress</strong></td><td>Biri üzerinde çalışıyor (branch açık)</td></tr>
+      <tr><td><strong>In Review</strong></td><td>PR açık, review bekliyor</td></tr>
+      <tr><td><strong>Done</strong></td><td>Merge edildi / kapatıldı</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Otomatik Akış</h3>
+  <p>Project Settings → Workflows kısmından şu otomasyonlar açılabilir:</p>
+  <ul>
+    <li>Yeni issue açıldığında otomatik "Backlog" kolonuna düş</li>
+    <li>Issue kapandığında otomatik "Done" kolonuna geç</li>
+    <li>PR açıldığında otomatik "In Review" kolonuna düş</li>
+  </ul>
+
+  <h3>Issue'yu PR'a Bağlama</h3>
+  <p>PR açıklamasında <code class="inline">Closes #5</code> yazarsan PR merge olduğunda issue otomatik kapanır ve Project'te "Done" kolonuna geçer. Bu çok güçlü — <strong>tek doğruluk kaynağı</strong> sağlar.</p>
+
+  <div class="callout task">
+    <h4>Yap (Maintainer)</h4>
+    <p>Takımın için bir Project oluştur. 12 backlog issue'sunu ekle. "Ready" kolonuna 3-4 kolay issue taşı. Takım üyeleri oradan seçsin.</p>
+  </div>
+</section>
+
+<section id="bolum-11">
+  <h2>11 · Git Flow'ları Karşılaştırma <span class="duration">~10 dk</span></h2>
+
+  <h3>GitHub Flow (Basit, Modern, Önerilen)</h3>
+  <div class="diagram">
+    <pre class="mermaid">
+gitGraph
+   commit id: "init"
+   branch feat/a
+   commit id: "a1"
+   commit id: "a2"
+   checkout main
+   merge feat/a
+   branch feat/b
+   commit id: "b1"
+   checkout main
+   merge feat/b
+    </pre>
+  </div>
+  <p>Tek uzun-ömürlü branch: <code class="inline">main</code>. Her feature kısa-ömürlü branch'te. Merge olduğu gibi production'a gider. Bizim workshop bunu kullanıyor.</p>
+
+  <h3>GitFlow (Karmaşık, Eski)</h3>
+  <p>İki uzun-ömürlü branch: <code class="inline">main</code> (release) ve <code class="inline">develop</code>. Ek olarak <code class="inline">feature/*</code>, <code class="inline">release/*</code>, <code class="inline">hotfix/*</code> branch'leri. Büyük enterprise ekiplerde ve quarterly release'lerde kullanılır. Yeni projelerde <strong>önerilmez</strong> — fazla overhead.</p>
+
+  <h3>Trunk-Based Development</h3>
+  <p>Herkes doğrudan <code class="inline">main</code>'e (trunk) push eder. Feature'lar <strong>feature flag</strong> ile gizlenir. Kısa-ömürlü branch'ler bile (1 gün'den az). Google, Facebook gibi dev şirketlerde yaygın. Güçlü CI, güçlü test disiplini gerektirir.</p>
+
+  <h3>Karşılaştırma</h3>
+  <table>
+    <thead><tr><th></th><th>GitHub Flow</th><th>GitFlow</th><th>Trunk-Based</th></tr></thead>
+    <tbody>
+      <tr><td>Uzun-ömürlü branch sayısı</td><td>1</td><td>2</td><td>1</td></tr>
+      <tr><td>Öğrenme eğrisi</td><td>Düşük</td><td>Yüksek</td><td>Orta (feature flag disiplin)</td></tr>
+      <tr><td>Release sıklığı</td><td>Sürekli</td><td>Planlı (quarterly vb.)</td><td>Çok sık (günde n kez)</td></tr>
+      <tr><td>En uygun ortam</td><td>Çoğu ekip</td><td>Versiyonlu ürünler</td><td>Yüksek deploy frekansı</td></tr>
+      <tr><td>CI gereksinimi</td><td>Orta</td><td>Düşük</td><td>Çok yüksek</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <h4>Öneri</h4>
+    <p>Başlangıç için <strong>GitHub Flow</strong>. Ekip/ürün olgunlaştıkça ihtiyaca göre evril. Yeni bir projeye GitFlow ile başlama.</p>
+  </div>
+</section>
+
+<section id="bolum-12">
+  <h2>12 · CI ve Bağımlılık Yönetimi <span class="duration">~20 dk</span></h2>
+
+  <h3>GitHub Actions ile CI</h3>
+  <p>Her PR otomatik olarak test ve lint çalıştırsın. Branch protection "CI yeşil olmadan merge yok" kuralını uygular.</p>
+
+  <p><code class="inline">.github/workflows/ci.yml</code>:</p>
+  <pre class="code"><span class="lang">yaml</span><button class="copy">Kopyala</button>name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Run ruff (lint)
+        run: uv run ruff check src tests
+
+      - name: Run pytest
+        run: uv run pytest -v
+
+      - name: Smoke test CLI
+        run: uv run photokit list</pre>
+
+  <h3>Test Yazma</h3>
+  <p><code class="inline">tests/test_grayscale.py</code>:</p>
+  <pre class="code"><span class="lang">python</span><button class="copy">Kopyala</button>from PIL import Image
+from photokit.filters.grayscale import GrayscaleFilter
+
+
+def test_grayscale_converts_to_l_mode():
+    img = Image.new("RGB", (10, 10), color="red")
+    flt = GrayscaleFilter()
+    out = flt.apply(img)
+    assert out.mode == "L"
+
+
+def test_grayscale_preserves_size():
+    img = Image.new("RGB", (50, 30))
+    out = GrayscaleFilter().apply(img)
+    assert out.size == (50, 30)</pre>
+
+  <p>Lokalde çalıştır:</p>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button>uv run pytest -v
+uv run ruff check src tests</pre>
+
+  <h3>Bağımlılık Ekleme</h3>
+  <p>Yeni bir filtre external bir kütüphaneye ihtiyaç duyarsa:</p>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># numpy ekle (örn. edge detection için)
+uv add numpy
+
+# sadece testte kullanilacak bagimlilik
+uv add --dev pytest-cov
+
+# pyproject.toml ve uv.lock otomatik guncellenir — ikisini de commit et
+git add pyproject.toml uv.lock
+git commit -m "chore: add numpy dependency for edge detection"</pre>
+
+  <div class="callout warn">
+    <h4>uv.lock'u Commit Et</h4>
+    <p><code class="inline">uv.lock</code> dosyası herkesin aynı versiyonları kurmasını sağlar. <strong>Mutlaka</strong> commit edin. <code class="inline">.venv/</code> ise <code class="inline">.gitignore</code>'da olsun.</p>
+  </div>
+
+  <h3>.gitignore</h3>
+  <pre class="code"><span class="lang">text</span><button class="copy">Kopyala</button># Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+
+# UV / venv
+.venv/
+.python-version  # isterseniz commit edin (bu tartisilir)
+
+# Editör
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Derlenmis cikti
+dist/
+build/
+*.egg-info/
+
+# Cikti test resimleri
+out_*.jpg
+test_output/</pre>
+
+  <h3>Release Yapma</h3>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># Tüm PR'ları merge ettikten sonra main'de:
+git switch main
+git pull origin main
+
+# Tag oluştur
+git tag -a v1.0.0 -m "First release: 5 filters ready"
+git push origin v1.0.0
+
+# GitHub Release oluştur (notes otomatik)
+gh release create v1.0.0 \
+  --title "v1.0.0 — First Public Release" \
+  --generate-notes</pre>
+
+  <p>Semantic Versioning: <code class="inline">MAJOR.MINOR.PATCH</code></p>
+  <ul>
+    <li><strong>MAJOR</strong>: Geriye uyumluluğu bozan değişiklik</li>
+    <li><strong>MINOR</strong>: Yeni özellik, geriye uyumlu</li>
+    <li><strong>PATCH</strong>: Bug fix</li>
+  </ul>
+</section>
+
+<section id="bolum-13">
+  <h2>13 · Kurtarma Toolkit'i <span class="duration">~10 dk</span></h2>
+
+  <p>Git nadiren kod kaybeder. Commit edilmiş her şey <code class="inline">reflog</code>'da saklanır (90 gün varsayılan).</p>
+
+  <h3>Çalıştığım Değişiklikleri Geçici Sakla</h3>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># Degisiklikleri stash'le (gecici koy)
+git stash
+
+# Stash'leri listele
+git stash list
+
+# En son stash'i geri al
+git stash pop
+
+# Specific stash'i al
+git stash apply stash@{1}
+
+# Stash'leri temizle
+git stash drop stash@{0}
+git stash clear  # hepsi</pre>
+
+  <h3>Son Commit'i Geri Almak</h3>
+  <table>
+    <thead><tr><th>Komut</th><th>Ne Yapar?</th></tr></thead>
+    <tbody>
+      <tr><td><code class="inline">git commit --amend</code></td><td>Son commit'i değiştirir (push etmediysen güvenli)</td></tr>
+      <tr><td><code class="inline">git reset --soft HEAD~1</code></td><td>Commit'i iptal et, değişiklikler staged kalsın</td></tr>
+      <tr><td><code class="inline">git reset --mixed HEAD~1</code></td><td>Commit'i iptal et, değişiklikler working'de kalsın (varsayılan)</td></tr>
+      <tr><td><code class="inline">git reset --hard HEAD~1</code></td><td>Commit'i ve değişiklikleri <strong>sil</strong> (tehlikeli)</td></tr>
+      <tr><td><code class="inline">git revert HEAD</code></td><td>Commit'in tersini yapan yeni commit — paylaşılmış kodda bu</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <h4>Reset vs Revert</h4>
+    <p><strong>Revert</strong> history'i korur, yeni bir "geri alma" commit'i üretir — paylaşılmış branch'lerde kullan. <strong>Reset</strong> history'i değiştirir — sadece kendi lokal branch'inde kullan.</p>
+  </div>
+
+  <h3>Reflog — "Bir commit'i sildim, geri dönebilir miyim?"</h3>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># Son hareketleri gor (silinmis commit'ler bile)
+git reflog
+
+# Orneğin "HEAD@{3}" diye bir satir gorursun
+# O commit'e don:
+git reset --hard HEAD@{3}</pre>
+
+  <p>Reflog sayesinde hard reset bile geri dönülebilirdir (commit'ler 90 gün saklanır).</p>
+
+  <h3>Yanlış Branch'e Commit Attım</h3>
+  <pre class="code"><span class="lang">bash</span><button class="copy">Kopyala</button># main'de olmaman gereken bir commit'in var
+git log --oneline       # son commit'in SHA'si: abc1234
+
+# Commit'i main'den kaldir (ama kaybetme)
+git reset --soft HEAD~1
+
+# Dogru branch'e gec
+git switch -c feat/correct-branch
+
+# Commit'i o branch'te yap
+git commit -m "feat: move changes to correct branch"</pre>
+
+  <h3>Sık Yapılan Hatalar</h3>
+  <ul>
+    <li><strong>Secret commit etmek</strong> — API key, şifre, vs. Çare: <code class="inline">git filter-repo</code> + key'i iptal et.</li>
+    <li><strong>Devasa PR açmak</strong> — Review edilmez. Küçük, bağımsız PR'lar.</li>
+    <li><strong>"fix typo" gibi gürültü commit'leri</strong> — Interactive rebase ile squash et: <code class="inline">git rebase -i HEAD~5</code>.</li>
+    <li><strong>Shared branch'e force push</strong> — Başkasının işini siler. Asla.</li>
+    <li><strong>node_modules / .venv commit etmek</strong> — .gitignore unutulmuş demek.</li>
+  </ul>
+</section>
+
+<section id="bolum-14">
+  <h2>14 · Kapanış ve Kaynaklar <span class="duration">~10 dk</span></h2>
+
+  <h3>Bugün Neler Yaptık?</h3>
+  <ul>
+    <li>Solo Git temelleri (init, commit, branch, merge, conflict)</li>
+    <li>UV ile modern Python proje yönetimi</li>
+    <li>PhotoKit için ortak bir repo üzerinde takım çalışması</li>
+    <li>Pull Request akışı, kod review, merge</li>
+    <li>Planlı bir merge conflict'in çözümü</li>
+    <li>Git worktree ile paralel branch'lerde aynı anda çalışma</li>
+    <li>GitHub Projects ile backlog yönetimi</li>
+    <li>GitHub Actions ile CI kurulumu</li>
+    <li>Git flow karşılaştırmaları ve kurtarma komutları</li>
+  </ul>
+
+  <h3>Kontrol Listesi (Kendini Test Et)</h3>
+  <ul class="checklist">
+    <li>Kendi repo'mu açıp ilk commit'i atabilirim</li>
+    <li>Branch açıp feature'ı PR olarak gönderebilirim</li>
+    <li>Bir arkadaşımın PR'ını review edebilirim</li>
+    <li>Merge conflict çıktığında çözebilirim</li>
+    <li>İki branch'te aynı anda çalışmak için worktree oluşturabilirim</li>
+    <li>Yanlış bir commit'i revert ile geri alabilirim</li>
+    <li>Bir GitHub Actions CI'ı kurabilirim</li>
+    <li>Hangi git flow'un ne zaman uygun olduğunu biliyorum</li>
+  </ul>
+
+  <h3>Kaynaklar</h3>
+  <ul>
+    <li><strong>Pro Git Book</strong> (ücretsiz, kapsamlı): <a href="https://git-scm.com/book/tr/v2">git-scm.com/book/tr/v2</a></li>
+    <li><strong>Oh Shit, Git!?</strong> (eğlenceli kurtarma rehberi): <a href="https://ohshitgit.com/">ohshitgit.com</a></li>
+    <li><strong>Learn Git Branching</strong> (interaktif): <a href="https://learngitbranching.js.org/?locale=tr">learngitbranching.js.org</a></li>
+    <li><strong>GitHub Docs</strong>: <a href="https://docs.github.com">docs.github.com</a></li>
+    <li><strong>UV Docs</strong>: <a href="https://docs.astral.sh/uv/">docs.astral.sh/uv</a></li>
+    <li><strong>Conventional Commits</strong>: <a href="https://www.conventionalcommits.org/tr/">conventionalcommits.org/tr</a></li>
+    <li><strong>Semantic Versioning</strong>: <a href="https://semver.org/lang/tr/">semver.org/lang/tr</a></li>
+  </ul>
+
+  <h3>Sonraki Adımlar</h3>
+  <ul>
+    <li>PhotoKit'i kendi projenize fork'layın, yeni filtreler ekleyin</li>
+    <li>Bir açık kaynak projeye küçük bir PR gönderin (ilk katkı milestone'u)</li>
+    <li>Kendi projenizde GitHub Actions CI kurun</li>
+    <li>Takımınızda code review kültürü oluşturun — kimseye bypass yok</li>
+  </ul>
+
+  <div class="callout info">
+    <h4>Teşekkürler</h4>
+    <p>Workshop bitti. Soru, öneri, "bu neden çalışmıyor" için grup kanalı açık.</p>
+  </div>
+</section>
+
+</main>
+
+</div>
+
+<div class="footer">
+  PhotoKit Workshop · Git · GitHub · UV · 2026
+</div>
+
+<script>
+  // Mermaid init
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    themeVariables: {
+      primaryColor: '#dbeafe',
+      primaryTextColor: '#1e3a8a',
+      primaryBorderColor: '#2563eb',
+      lineColor: '#2563eb',
+      secondaryColor: '#dcfce7',
+      tertiaryColor: '#fef9c3'
+    }
+  });
+
+  // Copy buttons
+  document.querySelectorAll('pre.code button.copy').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pre = btn.parentElement;
+      // Clone pre, strip button + lang, get text
+      const clone = pre.cloneNode(true);
+      clone.querySelectorAll('button, .lang').forEach(el => el.remove());
+      const text = clone.textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Kopyalandı ✓';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Kopyala';
+          btn.classList.remove('copied');
+        }, 1800);
+      });
+    });
+  });
+
+  // Smooth scroll for TOC
+  document.querySelectorAll('nav.toc a').forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>

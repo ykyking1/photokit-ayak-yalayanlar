@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# UV / venv
+.venv/
+venv/
+env/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+dist/
+build/
+
+# Workshop output images (generated during exercises)
+out_*.jpg
+out_*.png
+*_test.jpg
+*_test.png
+test_output/
+blur_test.*
+sepia_test.*
+invert_test.*
+resize_test.*
