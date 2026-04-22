@@ -1,10 +1,10 @@
 from .filters.base import Filter
 from .filters.grayscale import GrayscaleFilter
-from .filters.blur import BlurFilter  # <-- YENI IMPORT
+from .filters.sepia import SepiaFilter  # <-- YENI IMPORT
 
 FILTERS: dict[str, type[Filter]] = {
     "grayscale": GrayscaleFilter,
-    "blur": BlurFilter,  # <-- YENI KAYIT
+    "sepia": SepiaFilter,  # <-- YENI KAYIT
 }
 
 
